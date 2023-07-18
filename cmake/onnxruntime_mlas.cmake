@@ -525,12 +525,11 @@ else()
 	if(NOT APPLE)
           set(mlas_platform_srcs
             ${mlas_platform_srcs}
-            ${MLAS_SRC_DIR}/qgemm_kernel_amx.cpp
-	    ${MLAS_SRC_DIR}/amx_common.h
-            ${MLAS_SRC_DIR}/x86_64/QgemmU8S8KernelAmx.S
 	    ${MLAS_SRC_DIR}/x86_64/QgemmU8S8KernelAmxCommon.S
+            ${MLAS_SRC_DIR}/qgemm_kernel_amx.cpp
+            ${MLAS_SRC_DIR}/x86_64/QgemmU8S8KernelAmx.S
             )
-          set_source_files_properties(${MLAS_SRC_DIR}/qgemm_kernel_amx.cpp PROPERTIES COMPILE_FLAGS "-masm=intel -mavx2 -mavx512bw -mavx512dq -mavx512vl -mavx512f")
+          set_source_files_properties(${MLAS_SRC_DIR}/qgemm_kernel_amx.cpp PROPERTIES COMPILE_FLAGS "-mavx2 -mavx512bw -mavx512dq -mavx512vl -mavx512f")
           set_source_files_properties(${MLAS_SRC_DIR}/x86_64/QgemmU8S8KernelAmx.S PROPERTIES COMPILE_FLAGS "-mavx2 -mavx512bw -mavx512dq -mavx512vl -mavx512f")
 	endif()
 
@@ -558,7 +557,7 @@ set_target_properties(onnxruntime_mlas PROPERTIES FOLDER "ONNXRuntime")
 if (WIN32)
   target_compile_options(onnxruntime_mlas PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:/wd6385>" "$<$<COMPILE_LANGUAGE:CXX>:/wd4127>")
   if (onnxruntime_ENABLE_STATIC_ANALYSIS)
-    target_compile_options(onnxruntime_mlas PRIVATE  "$<$<COMPILE_LANGUAGE:CXX>:/analyze:stacksize 131072">)
+    target_compile_options(onnxruntime_mlas PRIVATE  "$<$<COMPILE_LANGUAGE:CXX>:/analyze:stacksize" 131072>)
   endif()
 endif()
 
