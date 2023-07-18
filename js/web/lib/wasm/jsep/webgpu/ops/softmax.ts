@@ -31,13 +31,13 @@ export interface ReduceAttributes extends AttributeWithCacheKey {
   axes: number[];
 }
 
-type ArgMinMaxOp = (inputs: readonly TensorView[], axes: number[]) => string[];
+type SoftmaxOp = (inputs: readonly TensorView[], axes: number[]) => string[];
 
-const noOp: ArgMinMaxOp = (): string[] => ['', '', 'value = _A[inputIdx];', ''];
+const noOp: SoftmaxOp = (): string[] => ['', '', 'value = _A[inputIdx];', ''];
 
 const createReduceProgramInfo =
     (metadata: ProgramMetadata, inputs: readonly TensorView[], attributes: ReduceAttributes,
-     argMinMaxOp: ArgMinMaxOp): ProgramInfo => {
+     argMinMaxOp: SoftmaxOp): ProgramInfo => {
       const outputShape: number[] = [];
       const inputShape = inputs[0].dims;
 
@@ -120,7 +120,7 @@ const createReduceAttributesFromInputs =
     };
 
 const createReduceProgramInfoLoader =
-    (inputs: readonly TensorView[], name: string, attributes: ReduceAttributes, reduceOp: ArgMinMaxOp):
+    (inputs: readonly TensorView[], name: string, attributes: ReduceAttributes, reduceOp: SoftmaxOp):
         ProgramInfoLoader => {
           const updatedAttributes: ReduceAttributes =
               inputs.length === 1 ? attributes : createReduceAttributesFromInputs(inputs, attributes);
@@ -135,9 +135,9 @@ const createReduceProgramInfoLoader =
         };
 
 
-export const argMin = (context: ComputeContext, attributes: ReduceAttributes): void => {
+export const softmax = (context: ComputeContext, attributes: ReduceAttributes): void => {
   validateInputs(context.inputs);
-  const argMinMaxOp: ArgMinMaxOp = (inputs: TensorView[], axes: number[]): string[] => {
+  const softmaxOp: SoftmaxOp = (inputs: TensorView[], axes: number[]): string[] => {
     const idxZero = [];
     for (let k = 0; k < inputs[0].dims.length; k++) {
       if (axes.indexOf(k) >= 0 || axes.length === 0) {
@@ -151,25 +151,5 @@ export const argMin = (context: ComputeContext, attributes: ReduceAttributes): v
       'if (_A[inputIdx] < value) {value = _A[inputIdx]; bestIndex = i32(lastIndex);} ',
     ];
   };
-  context.compute(createReduceProgramInfoLoader(context.inputs, 'ArgMin', attributes, argMinMaxOp), {inputs: [0]});
-};
-
-export const argMax = (context: ComputeContext, attributes: ReduceAttributes): void => {
-  validateInputs(context.inputs);
-  const argMinMaxOp: ArgMinMaxOp = (inputs: TensorView[], axes: number[]): string[] => {
-    const idxZero = [];
-    for (let k = 0; k < inputs[0].dims.length; k++) {
-      if (axes.indexOf(k) >= 0 || axes.length === 0) {
-        idxZero.push(`inputIndices[${k}] = 0;`);  // first element
-      }
-    }
-
-    return [
-      `${idxZero.join('\n')}`,
-      'var value = _A[inputIdx];\nvar bestIndex : i32 = 0;',
-      'if (_A[inputIdx] > value) {value = _A[inputIdx]; bestIndex = i32(lastIndex);} ',
-      ''
-    ];
-  };
-  context.compute(createReduceProgramInfoLoader(context.inputs, 'argMax', attributes, argMinMaxOp), {inputs: [0]});
+  context.compute(createReduceProgramInfoLoader(context.inputs, 'Softmax', attributes, softmaxOp), {inputs: [0]});
 };

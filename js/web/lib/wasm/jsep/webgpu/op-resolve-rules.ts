@@ -13,6 +13,7 @@ import {argMax, argMin} from './ops/argminmax';
 import {parseReduceAttributes, reduceL1, reduceL2, reduceLogSum, reduceLogSumExp, reduceMax, reduceMean, reduceMin, reduceProd, reduceSum, reduceSumSquare} from './ops/reduce';
 import {parseSplitAttributes, split} from './ops/split';
 import {parseTransposeAttributes, transpose} from './ops/transpose';
+import {softmax} from './ops/softmax';
 import * as unaryOps from './ops/unary-op';
 import {ComputeContext} from './types';
 
@@ -74,6 +75,7 @@ export const WEBGPU_OP_RESOLVE_RULES: Map<string, OperatorImplementation> = new 
   ['Sinh', [unaryOps.sinh]],
   ['Split', [split, parseSplitAttributes]],
   ['Sqrt', [unaryOps.sqrt]],
+  ['Softmax', [softmax]],
   ['Sub', [binaryOps.sub]],
   ['Tan', [unaryOps.tan]],
   ['Tanh', [unaryOps.tanh]],
