@@ -9,6 +9,7 @@ import {expand} from './ops/expand';
 import {gemm, parseGemmAttributes} from './ops/gemm';
 import {matMul} from './ops/matmul';
 import * as pool from './ops/pool';
+import {argMax, argMin} from './ops/argminmax';
 import {parseReduceAttributes, reduceL1, reduceL2, reduceLogSum, reduceLogSumExp, reduceMax, reduceMean, reduceMin, reduceProd, reduceSum, reduceSumSquare} from './ops/reduce';
 import {parseSplitAttributes, split} from './ops/split';
 import {parseTransposeAttributes, transpose} from './ops/transpose';
@@ -24,6 +25,8 @@ export const WEBGPU_OP_RESOLVE_RULES: Map<string, OperatorImplementation> = new 
   ['Acos', [unaryOps.acos]],
   ['Acosh', [unaryOps.acosh]],
   ['Add', [binaryOps.add]],
+  ['ArgMax', [argMax, parseReduceAttributes]],
+  ['ArgMin', [argMin, parseReduceAttributes]],
   ['Asin', [unaryOps.asin]],
   ['Asinh', [unaryOps.asinh]],
   ['Atan', [unaryOps.atan]],
