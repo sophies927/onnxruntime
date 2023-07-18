@@ -1,5 +1,5 @@
 set(composable_kernel_URL https://github.com/ROCmSoftwarePlatform/composable_kernel.git)
-set(composable_kernel_TAG d3adc665819dc0535a9f710ee7b8190ce85b3245) # 2023-06-28 06:58:28 -0700
+set(composable_kernel_TAG 189ea3b9aa1cf311869b8dd8d058e4531bf54bd4) # 2023-07-17 18:02:42 -0700
 
 set(PATCH ${PROJECT_SOURCE_DIR}/patches/composable_kernel/Fix_Clang_Build.patch)
 
@@ -14,6 +14,8 @@ FetchContent_GetProperties(composable_kernel)
 if(NOT composable_kernel_POPULATED)
   FetchContent_Populate(composable_kernel)
   set(BUILD_DEV OFF CACHE BOOL "Disable -Weverything, otherwise, error: 'constexpr' specifier is incompatible with C++98 [-Werror,-Wc++98-compat]" FORCE)
+  # Exclude i8 device gemm instances due to excessive long compilation time and not being used
+  set(DTYPES fp32 fp16 bf16)
   add_subdirectory(${composable_kernel_SOURCE_DIR} ${composable_kernel_BINARY_DIR} EXCLUDE_FROM_ALL)
 
   add_library(onnxruntime_composable_kernel_includes INTERFACE)
