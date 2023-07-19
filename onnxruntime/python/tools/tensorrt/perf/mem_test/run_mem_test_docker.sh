@@ -19,7 +19,7 @@ do
     fi
     found_leak_summary=false
   fi
-done < "valgrind.log"
+done < "/code/onnxruntime/build/Linux/Release/valgrind.log"
 
 # Parse Arguments
 while getopts w:d:p:l: parameter
