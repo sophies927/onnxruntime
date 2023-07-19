@@ -29,8 +29,8 @@ jobs:
   ${{if eq(parameters.MACHINE_POOL, 'onnxruntime-Win2019-GPU-dml-A10')}}:
     pool:
       name: onnxruntime-Win2019-GPU-dml-A10
-    demands:
-      - ImageOverride -equals Onnxruntime-Win2022-VS2022-DirectML-A10
+      demands:
+        - ImageOverride -equals Onnxruntime-Win2022-VS2022-DirectML-A10
   ${{else}}:
     pool: ${{ parameters.MACHINE_POOL }}
   variables:
