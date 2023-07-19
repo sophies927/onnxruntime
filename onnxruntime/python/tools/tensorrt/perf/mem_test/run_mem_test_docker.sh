@@ -2,6 +2,25 @@
 
 set -x
 
+# Run Valgrind to check if there's memory leak
+valgrind --leak-check=yes --show-leak-kinds=all ./code/onnxruntime/build/Linux/Release/onnxruntime_perf_test -e tensorrt -r 1 -i /code/onnxruntime/build/Linux/Release/testdata/squeezenet/model.onnx 2> /code/onnxruntime/build/Linux/Release/valgrind.log 
+found_leak_summary=false
+while IFS= read -r line
+do
+  if echo $line | grep -q 'LEAK SUMMARY:'; then
+    found_leak_summary=true
+  elif $found_leak_summary && echo $line | grep -q 'definitely lost:'; then
+    bytes_lost=$(echo $line | grep -o -E '[0-9,]+ bytes')
+    blocks_lost=$(echo $line | grep -o -E '[0-9]+ blocks')
+    echo "Bytes lost: $bytes_lost"
+    echo "Blocks lost: $blocks_lost"
+    if [ "$blocks_lost" != "0 blocks" ]; then
+      echo 'Memory leak happened when testing squeezenet model!'
+    fi
+    found_leak_summary=false
+  fi
+done < "valgrind.log"
+
 # Parse Arguments
 while getopts w:d:p:l: parameter
 do case "${parameter}"
