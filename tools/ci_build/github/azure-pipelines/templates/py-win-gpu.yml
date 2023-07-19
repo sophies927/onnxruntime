@@ -26,15 +26,15 @@ jobs:
   timeoutInMinutes: 240
   workspace:
     clean: all
-  ${{if or(eq(parameters.MACHINE_POOL, 'onnxruntime-Win2019-GPU-dml-A10'))}}:
+  ${{if eq(parameters.MACHINE_POOL, 'onnxruntime-Win2019-GPU-dml-A10')}}:
     pool:
       name: onnxruntime-Win2019-GPU-dml-A10
-  demands:
+    demands:
       - ImageOverride -equals Onnxruntime-Win2022-VS2022-DirectML-A10
   ${{else}}:
     pool: ${{ parameters.MACHINE_POOL }}
   variables:
-    ${{if or(eq(parameters.MACHINE_POOL, 'onnxruntime-gpu-winbuild-T4'))}}:
+    ${{if eq(parameters.MACHINE_POOL, 'onnxruntime-gpu-winbuild-T4')}}:
       VSGenerator: 'Visual Studio 16 2019'
     ${{else}}:
       VSGenerator: 'Visual Studio 17 2022'
