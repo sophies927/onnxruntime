@@ -300,9 +300,9 @@ stages:
     workspace:
       clean: all
     pool:
-      name: 'onnxruntime-Win2022-GPU-A10'
-      #demands:
-      #  - ImageOverride -equals onnxruntime-Windows-2022-scus
+      name: 'onnxruntime-gpu-winbuild-t4'
+      demands:
+        - ImageOverride -equals onnxruntime-Windows-2022-scus
     timeoutInMinutes: 60
     variables:
     - name: runCodesignValidationInjection
