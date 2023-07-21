@@ -177,6 +177,9 @@ jobs:
           --user onnxruntimedev \
           --volume $(Build.SourcesDirectory):/onnxruntime_src \
           --volume $(Build.BinariesDirectory):/build \
+          -e OPENBLAS_NUM_THREADS=1 \
+          -e OPENMP_NUM_THREADS=1 \
+          -e MKL_NUM_THREADS=1 \
           -e KERNEL_EXPLORER_BUILD_DIR=/build/$(BuildConfig) \
           -e KERNEL_EXPLORER_BATCHED_GEMM_MAX_BATCH_SIZE=8 \
           onnxruntimetrainingrocm-cibuild-rocm$(RocmVersion)-test \
